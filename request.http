@@ -1,0 +1,24 @@
+GET http://localhost:3000/mep
+
+###
+GET http://localhost:3000/mep/octubre-2023
+
+###
+POST http://localhost:3000/mep HTTP/1.1
+Content-Type: application/json
+
+{
+    "id": "julio-2024",
+    "value": 1200
+}
+
+###
+PUT http://localhost:3000/mep/junio-2024 HTTP/1.1
+Content-Type: application/json
+
+{
+    "value": 1095
+}
+
+###
+DELETE http://localhost:3000/mep/junio-2024 HTTP/1.1

@@ -1,8 +1,11 @@
 import express from 'express';
 import fs from 'fs';
+import bodyParser from "body-parser";
 
 const app = express();
 const PORT = 3000;
+
+app.use(bodyParser.json())
 
 const readData = () => {
     try {
@@ -23,18 +26,49 @@ const writeData = (data) => {
 
 app.get('/mep', (req, res) => {
     const data = readData()
-    res.json(data)
+    res.json(data.months)
 })
 
-app.post('/mep/:date', (req, res) => {
-    const { date } = req.params
-    const { value } = req.body
-    if (!value) {
-        res.status(418).send({message: "The value is needed"})
+
+app.get('/mep/:id', (req, res) => {
+    const data = readData()
+    const id = req.params.id
+    const month = data.months.find(month => month.id === id)
+    res.send(month)
+})
+
+
+app.post('/mep', (req, res) => {
+    const data  = readData()
+    const body = req.body
+    const newMonth = {
+        ...body
     }
-    res.send({
-        mep: `El valor del mep para el día ${date} es ${value}`
-    })
+    data.months.push(newMonth)
+    writeData(data)
+    res.json(newMonth)
+})
+
+app.put('/mep/:id', (req, res) => {
+    const data  = readData()
+    const body = req.body
+    const id = req.params.id
+    const bookIndex = data.months.findIndex(month => month.id === id)
+    data.months[bookIndex] = {
+        ...data.months[bookIndex],
+        ...body,
+    }
+    writeData(data)
+    res.json({message: "Registro actualizado"})
+})
+
+app.delete('/mep/:id', (req, res) => {
+    const data  = readData()
+    const id = req.params.id
+    const bookIndex = data.months.findIndex(month => month.id === id)
+    data.months.splice(bookIndex, 1)
+    writeData(data)
+    res.json({message: "Registro eliminado"})
 })
 
 app.listen(PORT, () => console.log(`Its alive on http://localhost:${PORT}`))

@@ -24,6 +24,10 @@ const writeData = (data) => {
     }
 }
 
+app.get('', (req, res) => {
+    res.send("Welcome to macro-api for Argentina")
+})
+
 app.get('/mep', (req, res) => {
     const data = readData()
     res.json(data.months)
